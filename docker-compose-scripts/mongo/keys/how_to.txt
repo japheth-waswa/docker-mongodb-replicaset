@@ -1,0 +1,1 @@
+openssl rand -base64 768 > replica.key #the file name is part of the key so use it as you have generated it,dont change the file name 
