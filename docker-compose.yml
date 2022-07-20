@@ -14,8 +14,8 @@ services:
     volumes:
       - ./docker-compose-scripts/mongo/keys/replica.key:/keys/replica.key #key file for replica set
       - ./docker-compose-scripts/mongo/scripts:/scripts/mongo
-      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data1/db:/data/db # This is where your volume will persist. e.g. VOLUME-DIR = ./volumes/mongodb
-      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data1/configdb:/data/configdb
+      - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data1/db:/data/db # This is where your volume will persist. e.g. VOLUME-DIR = ./volumes/mongodb
+      - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data1/configdb:/data/configdb
 
   mongo2:
     hostname: mongo2
@@ -25,11 +25,11 @@ services:
     ports:
       - 55536:27017
     restart: always
-    entrypoint: sh -c "chmod 400 /keys/replica.key && /usr/bin/mongod --bind_ip_all --replSet bnbjumbo-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key" #working-final logic with key
+    entrypoint: sh -c "chmod 400 /keys/replica.key && /usr/bin/mongod --bind_ip_all --replSet projectname-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key" #working-final logic with key
     volumes:
       - ./docker-compose-scripts/mongo/keys/replica.key:/keys/replica.key #key file for replica set
-      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data2/db:/data/db # Note the data2, it must be different to the original set.
-      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data2/configdb:/data/configdb
+      - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data2/db:/data/db # Note the data2, it must be different to the original set.
+      - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data2/configdb:/data/configdb
       
   mongo3:
     hostname: mongo3
@@ -39,8 +39,8 @@ services:
     ports:
       - 55537:27017
     restart: always
-    entrypoint: sh -c "chmod 400 /keys/replica.key && /usr/bin/mongod --bind_ip_all --replSet bnbjumbo-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key" #working-final logic with key
+    entrypoint: sh -c "chmod 400 /keys/replica.key && /usr/bin/mongod --bind_ip_all --replSet projectname-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key" #working-final logic with key
     volumes:
       - ./docker-compose-scripts/mongo/keys/replica.key:/keys/replica.key #key file for replica set
-      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data3/db:/data/db # Note the data3, must be different to the original set.
-      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data3/configdb:/data/configdb
+      - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data3/db:/data/db # Note the data3, must be different to the original set.
+      - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data3/configdb:/data/configdb
