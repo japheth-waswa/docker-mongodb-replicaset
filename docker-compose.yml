@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+# first, we define the three mongo servers that will act as replicas
+  mongo1:
+    hostname: mongo1
+    image: mongo
+    expose:
+      - 27017
+    ports:
+      - 55535:27017
+    restart: always
+    entrypoint: ["sh", "/scripts/mongo/setup.sh"]
+    volumes:
+      - ./docker-compose-scripts/mongo/keys/replica.key:/keys/replica.key #key file for replica set
+      - ./docker-compose-scripts/mongo/scripts:/scripts/mongo
+      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data1/db:/data/db # This is where your volume will persist. e.g. VOLUME-DIR = ./volumes/mongodb
+      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data1/configdb:/data/configdb
+
+  mongo2:
+    hostname: mongo2
+    image: mongo
+    expose:
+      - 27017
+    ports:
+      - 55536:27017
+    restart: always
+    entrypoint: sh -c "chmod 400 /keys/replica.key && /usr/bin/mongod --bind_ip_all --replSet bnbjumbo-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key" #working-final logic with key
+    volumes:
+      - ./docker-compose-scripts/mongo/keys/replica.key:/keys/replica.key #key file for replica set
+      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data2/db:/data/db # Note the data2, it must be different to the original set.
+      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data2/configdb:/data/configdb
+      
+  mongo3:
+    hostname: mongo3
+    image: mongo
+    expose:
+      - 27017
+    ports:
+      - 55537:27017
+    restart: always
+    entrypoint: sh -c "chmod 400 /keys/replica.key && /usr/bin/mongod --bind_ip_all --replSet bnbjumbo-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key" #working-final logic with key
+    volumes:
+      - ./docker-compose-scripts/mongo/keys/replica.key:/keys/replica.key #key file for replica set
+      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data3/db:/data/db # Note the data3, must be different to the original set.
+      - /Users/japhethelijah/dev/docker-volumes/mongo_jumbobnb_102/data3/configdb:/data/configdb
