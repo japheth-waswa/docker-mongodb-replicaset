@@ -1,4 +1,4 @@
-# BNB JUMBO PROJECT #
+# MONGODB REPLICASET WITH AUTH,NGINX AS REVERSE PROXY & LOAD BALANCER #
 
 This README would normally document whatever steps are necessary to get your application up and running.
 

@@ -14,64 +14,56 @@ MONGODB_NORMAL_USER_USERNAME=jwbjd50
 MONGODB_NORMAL_USER_PASSWORD=j9w1b6jd450
 
 
+waitMongoshToStart(){
+until mongosh --eval "print(\"$1\")"
+do
+  echo "waiting mongosh conn....."
+  sleep 5
+done
+}
+
+waitForMongoDbServerInit(){
+until false
+do
+  echo $2
+  MONGODBUP="false"
+  LOCALRES=$(mongosh "mongodb://$1:27017" --eval "db.stats()" 2>&1)
+
+  #check for all responses that is not MongoNetworkError to confirm the server is up
+  case "$LOCALRES" in 
+  *"MongoNetworkError"* ) MONGODBUP="false";;
+  *) MONGODBUP="true";
+  esac
+  if [ $MONGODBUP = "true" ]; 
+      then
+      break
+  fi
+  
+  sleep 5
+done 
+}
+
+
 echo "======================================================>starting mongoddb in non-auth mode with replication in background"
 #start mongodb in non-auth mode
 /usr/bin/mongod --bind_ip_all --replSet bnbjumbo-mongo-set --journal --dbpath /data/db & #the & sends it to background
 
 
 #waiting for mongosh to start & be ready
-until mongosh --eval "print(\"waited for connection\")"
-  do
-    echo "waiting mongosh conn....."
-    sleep 5
-  done
+waitMongoshToStart "waited for mongosh connection loop"
 
 
 #check if replica set 2 is ready by ensuring ther response is not MongoNetworkError:
 echo "======================================================>polling for replica-set-2 to start"
-until false
-  do
-    echo '=====================> replica set 2 checking...'
-    MONGODB2UP="false"
-    LOCALRES=$(mongosh "mongodb://${MONGODB2}:27017" --eval "db.stats()" 2>&1)
-
-    #check for all responses that is not MongoNetworkError to confirm the server is up
-    case "$LOCALRES" in 
-    *"MongoNetworkError"* ) MONGODB2UP="false";;
-    *) MONGODB2UP="true";
-    esac
-    if [ $MONGODB2UP = "true" ]; 
-        then
-        break
-    fi
-    
-    sleep 5
-  done
+waitForMongoDbServerInit ${MONGODB2} "=====================> replica set 2 checking"
 
 
 #check if replica set 3 is ready by ensuring ther response is not MongoNetworkError:
 echo "======================================================>polling for replica-set-3 to start"
-until false
-  do
-    echo '=====================> replica set 3 checking...'
-    MONGODB3UP="false"
-    LOCALRES=$(mongosh "mongodb://${MONGODB3}:27017" --eval "db.stats()" 2>&1)
-
-    #check for all responses that is not MongoNetworkError to confirm the server is up
-    case "$LOCALRES" in 
-    *"MongoNetworkError"* ) MONGODB3UP="false";;
-    *) MONGODB3UP="true";
-    esac
-    if [ $MONGODB3UP = "true" ]; 
-        then
-        break
-    fi
-    
-    sleep 5
-  done
+waitForMongoDbServerInit ${MONGODB3} "=====================> replica set 3 checking"
     
 
-#initialize replication register primary
+#initialize replication,register primary
 echo "======================================================>Intializing replication and register primary"
 mongosh --port 27017 <<EOF
 var cfg = {
@@ -115,9 +107,9 @@ use ${MONGODB_APP_DATABASE};
 db.createUser(
     {
     user: "${MONGODB_NORMAL_USER_USERNAME}",
-        pwd: "${MONGODB_NORMAL_USER_PASSWORD}",
-        roles: [ { role: "readWrite", db: "${MONGODB_APP_DATABASE}" } ],
-        passwordDigestor: "server",
+    pwd: "${MONGODB_NORMAL_USER_PASSWORD}",
+    roles: [ { role: "readWrite", db: "${MONGODB_APP_DATABASE}" } ],
+    passwordDigestor: "server",
     });
     db.getSiblingDB("${MONGODB_APP_DATABASE}").auth("${MONGODB_NORMAL_USER_USERNAME}", "${MONGODB_NORMAL_USER_PASSWORD}");
 EOF
@@ -139,11 +131,7 @@ echo "======================================================> start mongodb in a
 
 
 #waiting for mongosh to start & be ready
-until mongosh --eval "print(\"waited for connection after auth initialization\")"
-  do
-    echo "waiting mongosh conn....."
-    sleep 5
-  done
+waitMongoshToStart "waited for mongosh connection loop  after auth initialization"
 
 
 # initialize replication and attach other members
