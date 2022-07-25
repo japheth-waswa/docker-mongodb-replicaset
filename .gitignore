@@ -1,1 +1,3 @@
 tests/
+docker-compose-without-projectname.yml
+docker-compose-scripts/mongo/scripts/setup-with-passwords.sh

@@ -1,17 +1,17 @@
 #!/bin/bash
 
 #mongodb clusters/replica set
-MONGODB_REPLICA_SET_NAME=bnbjumbo-mongo-set
+MONGODB_REPLICA_SET_NAME=projectname-mongo-set
 MONGODB1=mongo1
 MONGODB2=mongo2
 MONGODB3=mongo3
 
 #mongodb users
-MONGODB_APP_DATABASE=bnbjumbo
-MONGODB_ROOT_USERNAME=jwnrcl50
-MONGODB_ROOT_PASSWORD=j4w1n6r5c8l450
-MONGODB_NORMAL_USER_USERNAME=jwbjd50
-MONGODB_NORMAL_USER_PASSWORD=j9w1b6jd450
+MONGODB_APP_DATABASE=projectname
+MONGODB_ROOT_USERNAME=root_username
+MONGODB_ROOT_PASSWORD=root_password
+MONGODB_NORMAL_USER_USERNAME=user1_username
+MONGODB_NORMAL_USER_PASSWORD=user2_username
 
 
 waitMongoshToStart(){
@@ -46,7 +46,7 @@ done
 
 echo "======================================================>starting mongoddb in non-auth mode with replication in background"
 #start mongodb in non-auth mode
-/usr/bin/mongod --bind_ip_all --replSet bnbjumbo-mongo-set --journal --dbpath /data/db & #the & sends it to background
+/usr/bin/mongod --bind_ip_all --replSet projectname-mongo-set --journal --dbpath /data/db & #the & sends it to background
 
 
 #waiting for mongosh to start & be ready
@@ -127,7 +127,7 @@ echo "======================================================> shutdown mongodb"
 
 echo "======================================================> start mongodb in auth-mode in background"
 #start mongodb in auth mode in background
-/usr/bin/mongod --bind_ip_all --replSet bnbjumbo-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key & #& send it the backgroud
+/usr/bin/mongod --bind_ip_all --replSet projectname-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key & #& send it the backgroud
 
 
 #waiting for mongosh to start & be ready
@@ -150,4 +150,4 @@ echo "======================================================> shutdown mongodb a
 
 echo "======================================================> start mongodb in auth-mode in foreground"
 #start mongodb in auth mode in foreground
-/usr/bin/mongod --bind_ip_all --replSet bnbjumbo-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key
+/usr/bin/mongod --bind_ip_all --replSet projectname-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key
