@@ -24,7 +24,7 @@ services:
       - 27017
     ports:
       - 55536:27017
-    restart: always
+    restart: alway
     entrypoint: sh -c "chmod 400 /keys/replica.key && /usr/bin/mongod --bind_ip_all --replSet bnbjumbo-mongo-set --journal --dbpath /data/db --auth --keyFile /keys/replica.key" #working-final logic with key
     volumes:
       - ./docker-compose-scripts/mongo/keys/replica.key:/keys/replica.key #key file for replica set
