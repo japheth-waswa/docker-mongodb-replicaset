@@ -1,12 +1,23 @@
 # MONGODB REPLICASET WITH AUTH,NGINX AS REVERSE PROXY & LOAD BALANCER #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+These scripts show show to use docker and setup mongodb as a replica set.You can more add more replica sets as your need arises.
 
-### What is this repository for? ###
+Nginx is also used as a reverse proxy and load balance for a sample backend application written in node.js
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### MONGODB REPLICA SET ###
+
+We have 3 databases. 
+
+All these databases can only be accesed by authenticated accounts. The authenticated account(s) is created on the primary database.
+
+Mmembers in the replica set communicate through a trusted key. [Key File](https://www.mongodb.com/docs/manual/tutorial/deploy-replica-set-with-keyfile-access-control/)
+
+You can modify the docker-compose-scripts/mongo/scripts/setup.sh file to suit your needs.
+
+* Primary db
+* 2 Secondary dbs
+
+
 
 ### How do I get set up? ###
 
