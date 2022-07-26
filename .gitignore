@@ -1,3 +1,5 @@
 tests/
 docker-compose-without-projectname.yml
-docker-compose-scripts/mongo/scripts/setup-with-passwords.sh
+docker-compose-scripts/mongo/secrets/mongo.secrets.dev
+backend/src/node_modules/
+backend/src/public/

@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
 # first, we define the three mongo servers that will act as replicas
   mongo1:
     hostname: mongo1
@@ -12,10 +13,12 @@ services:
     restart: always
     entrypoint: ["sh", "/scripts/mongo/setup.sh"]
     volumes:
+      - ./docker-compose-scripts/mongo/secrets:/secrets/mongo
       - ./docker-compose-scripts/mongo/keys/replica.key:/keys/replica.key #key file for replica set
       - ./docker-compose-scripts/mongo/scripts:/scripts/mongo
       - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data1/db:/data/db # This is where your volume will persist. e.g. VOLUME-DIR = ./volumes/mongodb
       - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data1/configdb:/data/configdb
+
 
   mongo2:
     hostname: mongo2
@@ -31,6 +34,7 @@ services:
       - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data2/db:/data/db # Note the data2, it must be different to the original set.
       - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data2/configdb:/data/configdb
       
+
   mongo3:
     hostname: mongo3
     image: mongo
@@ -44,3 +48,50 @@ services:
       - ./docker-compose-scripts/mongo/keys/replica.key:/keys/replica.key #key file for replica set
       - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data3/db:/data/db # Note the data3, must be different to the original set.
       - /Users/japhethelijah/dev/docker-volumes/mongo_projectname/data3/configdb:/data/configdb
+
+
+  nginx:
+    hostname: nginxserver
+    image: nginx
+    expose:
+      - 80
+    ports:
+      - 80:80
+    volumes:
+      - ./docker-compose-scripts/nginx/nginx.conf:/etc/nginx/nginx.conf
+
+
+  backendPrimary:
+    hostname: backendPrimary
+    image: ubuntu:20.04
+    working_dir: /app
+    expose:
+      - 3999
+    ports:
+      - 4000:3999
+    environment:
+      - MONGO_SECRETS_LOCATION=/secrets/mongo/mongo.secrets
+    restart: always
+    entrypoint: ["sh", "/scripts/app/setup.sh"]
+    volumes:
+      - ./docker-compose-scripts/mongo/secrets:/secrets/mongo
+      - ./docker-compose-scripts/app:/scripts/app
+      - ./backend:/app
+  
+
+  backendSecondary:
+    hostname: backendSecondary
+    image: ubuntu:20.04
+    working_dir: /app
+    expose:
+      - 3999
+    ports:
+      - 4001:3999
+    environment:
+      - MONGO_SECRETS_LOCATION=/secrets/mongo/mongo.secrets
+    restart: always
+    entrypoint: ["sh", "/scripts/app/setup.sh"]
+    volumes:
+      - ./docker-compose-scripts/mongo/secrets:/secrets/mongo
+      - ./docker-compose-scripts/app:/scripts/app
+      - ./backend:/app

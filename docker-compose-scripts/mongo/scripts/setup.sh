@@ -1,18 +1,8 @@
 #!/bin/bash
 
-#mongodb clusters/replica set
-MONGODB_REPLICA_SET_NAME=projectname-mongo-set
-MONGODB1=mongo1
-MONGODB2=mongo2
-MONGODB3=mongo3
-
-#mongodb users
-MONGODB_APP_DATABASE=projectname
-MONGODB_ROOT_USERNAME=root_username
-MONGODB_ROOT_PASSWORD=root_password
-MONGODB_NORMAL_USER_USERNAME=user1_username
-MONGODB_NORMAL_USER_PASSWORD=user2_username
-
+echo "loading mongo secrets..."
+#load mongo secrets
+. /secrets/mongo/mongo.secrets
 
 waitMongoshToStart(){
 until mongosh --eval "print(\"$1\")"
